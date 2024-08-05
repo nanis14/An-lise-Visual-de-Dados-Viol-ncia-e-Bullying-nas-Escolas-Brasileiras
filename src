@@ -1,0 +1,96 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from IPython.display import display, HTML
+import plotly.graph_objs as go
+
+# Dados fictícios para visualização
+violence_school = np.random.rand(50) * 100  # Percentual de violência na escola
+bullying = np.random.rand(50) * 100         # Percentual de bullying
+age = np.random.randint(16, 60, 50)         # Idade dos entrevistados
+
+# Configuração do gráfico de dispersão 3D
+fig = plt.figure(figsize=(12, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Criação do gráfico de dispersão
+scatter = ax.scatter(violence_school, bullying, age, c=age, cmap='viridis', marker='o')
+
+# Adicionando rótulos aos eixos com fonte menor
+ax.set_xlabel('Percentual de Violência na Escola (%)', fontsize=10)
+ax.set_ylabel('Percentual de Bullying (%)', fontsize=10)
+ax.set_zlabel('Idade dos Entrevistados', fontsize=10)
+
+# Título do gráfico
+plt.title('Distribuição de Violência e Bullying nas Escolas por Idade', fontsize=12)
+
+# Adicionando barra de cores
+cbar = fig.colorbar(scatter, ax=ax)
+cbar.set_label('Idade', fontsize=10)
+
+# Exibição do gráfico de dispersão
+plt.show()
+
+# Descrição do gráfico de dispersão com fonte estilizada
+description_scatter = """
+<div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; margin-top: 20px;">
+    <strong>Descrição do Gráfico de Dispersão 3D:</strong><br>
+    Este gráfico de dispersão 3D ilustra a distribuição de violência e bullying nas escolas brasileiras em relação à idade dos entrevistados.
+    Os dados fictícios representam:
+    <ul>
+        <li>O eixo X mostra o percentual de violência na escola.</li>
+        <li>O eixo Y mostra o percentual de bullying.</li>
+        <li>O eixo Z mostra a idade dos entrevistados.</li>
+    </ul>
+    As cores dos pontos indicam diferentes idades, proporcionando uma visualização clara da distribuição desses dados e como eles variam entre diferentes faixas etárias.
+</div>
+"""
+
+# Criando o gráfico de pizza interativo com plotly
+labels = [f'Idade {i}' for i in range(16, 60)]
+age_counts = np.bincount(age, minlength=60)[16:60]
+
+# Remover os valores zero
+labels_filtered = []
+age_counts_filtered = []
+for label, count in zip(labels, age_counts):
+    if count > 0:
+        labels_filtered.append(label)
+        age_counts_filtered.append(count)
+
+fig_pie = go.Figure(data=[go.Pie(labels=labels_filtered, values=age_counts_filtered)])
+fig_pie.update_layout(title='Distribuição de Idades dos Entrevistados', width=800, height=600)
+
+# Descrição do gráfico de pizza com fonte estilizada
+description_pie = """
+<div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; margin-top: 20px;">
+    <strong>Descrição do Gráfico de Pizza Interativo:</strong><br>
+    Este gráfico de pizza mostra a distribuição percentual das idades dos entrevistados, baseado nos dados fictícios utilizados.
+    Apenas as faixas etárias com contagens maiores que zero são representadas.
+</div>
+"""
+
+# Criando o gráfico de barras na horizontal
+plt.figure(figsize=(10, 8))
+bar_colors = plt.cm.viridis(age / max(age))  # Utiliza a escala de cores viridis para colorir as barras
+plt.barh(labels_filtered, age_counts_filtered, color=bar_colors)
+plt.ylabel('Idade')
+plt.xlabel('Número de Entrevistados')
+plt.title('Distribuição de Entrevistados por Idade')
+plt.tight_layout()
+
+# Descrição do gráfico de barras na horizontal com fonte estilizada
+description_bar = """
+<div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; margin-top: 20px;">
+    <strong>Descrição do Gráfico de Barras Horizontal:</strong><br>
+    Este gráfico de barras horizontais ilustra a distribuição dos entrevistados por faixa etária.
+    Cada barra é colorida de acordo com a idade dos entrevistados, seguindo uma escala de cores que varia de acordo com a idade representada.
+    Os dados são baseados em uma amostra fictícia de entrevistas.
+</div>
+"""
+
+# Exibição dos gráficos e descrições usando HTML
+display(HTML(description_scatter))
+plt.show()
+display(HTML(description_bar))
+fig_pie.show()
+display(HTML(description_pie))
